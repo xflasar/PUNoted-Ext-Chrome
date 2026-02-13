@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrUn Data Forwarder</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="popup.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-xl font-bold mb-4 text-center">PUNoted Data Forwarder</h2>
+
+        <div id="login-section">
+            <div class="mt-4 p-3 bg-gray-700 rounded-md mb-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-300 font-medium">Server Status:</span>
+                    <span id="server-status-display-login" class="font-semibold flex items-center" role="status" aria-live="polite">
+                        <span id="server-status-indicator-login" class="status-indicator"></span>
+                        <span id="server-status-text-login">Checking...</span>
+                    </span>
+                </div>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-300">Username:</label>
+                    <input type="text" id="username" name="username" required autocomplete="username"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-300">Password:</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <button type="submit" class="w-full">Login</button>
+            </form>
+            <div id="login-message" class="message-box hidden"></div>
+            <!-- <p class="text-center text-gray-400 mt-2">Don't have an account? <span id="show-register" class="link-text">Register here</span></p>
+            <p class="text-center text-gray-400 mt-2">Account not verified? <span id="show-verify-email-from-login" class="link-text">Verify Email here</span></p> -->
+            <p class="text-center text-gray-400 mt-2"><span id="show-settings-from-login" class="link-text hidden">Settings</span></p>
+        </div>
+
+        <!-- <div id="register-section" class="hidden">
+            <div class="mt-4 p-3 bg-gray-700 rounded-md mb-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-300 font-medium">Server Status:</span>
+                    <span id="server-status-display-register" class="font-semibold flex items-center" role="status" aria-live="polite">
+                        <span id="server-status-indicator-register" class="status-indicator"></span>
+                        <span id="server-status-text-register">Checking...</span>
+                    </span>
+                </div>
+            </div>
+            <form id="register-form" class="space-y-4">
+                <div>
+                    <label for="register-username" class="block text-sm font-medium text-gray-300">Username:</label>
+                    <input type="text" id="register-username" name="username" required autocomplete="username"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="register-email" class="block text-sm font-medium text-gray-300">Email:</label>
+                    <input type="email" id="register-email" name="email" required autocomplete="email"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="register-password" class="block text-sm font-medium text-gray-300">Password:</label>
+                    <input type="password" id="register-password" name="password" required autocomplete="new-password"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700">Register</button>
+            </form>
+            <div id="register-message" class="message-box"></div>
+            <p class="text-center text-gray-400 mt-2">Already have an account? <span id="show-login" class="link-text">Login here</span></p>
+        </div> -->
+
+        <!-- <div id="verify-email-section" class="hidden">
+            <div class="mt-4 p-3 bg-gray-700 rounded-md mb-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-300 font-medium">Server Status:</span>
+                    <span id="server-status-display-verify" class="font-semibold flex items-center" role="status" aria-live="polite">
+                        <span id="server-status-indicator-verify" class="status-indicator"></span>
+                        <span id="server-status-text-verify">Checking...</span>
+                    </span>
+                </div>
+            </div>
+            <h3 class="text-lg font-semibold mb-2 text-center">Verify Your Email</h3>
+            <p class="text-gray-400 text-sm mb-4 text-center">A verification code was sent to your email.</p>
+            <form id="verify-email-form" class="space-y-4">
+                <div>
+                    <label for="verify-email-input" class="block text-sm font-medium text-gray-300">Email:</label>
+                    <input type="email" id="verify-email-input" name="email" required autocomplete="email"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="verification-code" class="block text-sm font-medium text-gray-300">Verification Code:</label>
+                    <input type="text" id="verification-code" name="code" required autocomplete="one-time-code"
+                           class="mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700">Verify Email</button>
+            </form>
+            <div id="verify-email-message" class="message-box"></div>
+            <p class="text-center text-gray-400 mt-2"><span id="resend-code" class="link-text">Resend Code</span></p>
+            <p class="text-center text-gray-400 mt-2"><span id="back-to-login-from-verify" class="link-text">Back to Login</span></p>
+        </div> -->
+
+        <div id="dashboard-section" class="hidden text-center">
+            <h3 class="text-lg font-semibold mb-2">Hello <span id="dashboard-username"></span>!</h3>
+            <p class="text-gray-400">Data transfer is active.</p>
+
+            <div class="mt-4 p-3 bg-gray-700 rounded-md">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-300 font-medium">Server Status:</span>
+                    <span id="server-status-display" class="font-semibold flex items-center" role="status" aria-live="polite">
+                        <span id="server-status-indicator" class="status-indicator"></span>
+                        <span id="server-status-text">Checking...</span>
+                    </span>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-300 font-medium">Successfully Sent:</span>
+                    <span id="successful-sent-count" class="font-semibold text-green-400">0</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-300 font-medium">Messages in Queue:</span>
+                    <span id="queue-count" class="font-semibold text-yellow-400">0</span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="consent-pu-debug" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                    <span class="ml-2 text-gray-300">Enable PrUn Debug Logging (requires page reload)</span>
+                </label>
+                <button id="queue-remove-button" class="mt-4 w-full bg-red-600 hover:bg-red-700">Remove queue items</button>
+                <button id="show-settings-from-dashboard" class="mt-2 w-full bg-gray-600 hover:bg-gray-700">Settings</button>
+            </div>
+            <button id="logout-button" class="mt-4 w-full bg-red-600 hover:bg-red-700">Logout</button>
+        </div>
+
+        <div id="settings-section" class="hidden text-center">
+            <h3 class="text-lg font-semibold mb-4">Message Sending Settings</h3>
+            <p class="text-gray-400 text-sm mb-4">Choose which message types to send to the server.</p>
+            <div id="message-type-settings-container" class="space-y-1 p-2 bg-gray-700 rounded-md text-sm">
+                <p class="text-gray-500">Loading settings...</p>
+            </div>
+            <button id="save-settings-button" class="mt-4 w-full bg-blue-600 hover:bg-blue-700">Save Settings</button>
+            <button id="back-to-dashboard-from-settings" class="mt-2 w-full bg-gray-600 hover:bg-gray-700">Back to Dashboard</button>
+        </div>
+    </div>
+    <script type="module" src="popup.js"></script>
+</body>
+</html>

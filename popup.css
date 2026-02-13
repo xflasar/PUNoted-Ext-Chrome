@@ -1,0 +1,146 @@
+body {
+    width: 300px;
+    font-family: "Inter", sans-serif;
+    background-color: #1a202c;
+    color: #e2e8f0;
+}
+.container {
+    padding: 1rem;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"] { 
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+button {
+    background-color: #4299e1; /* Blue */
+    color: white;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600; /* font-semibold */
+    transition: background-color 0.2s;
+}
+button:hover {
+    background-color: #3182ce; /* Darker blue */
+}
+.message-box {
+    background-color: #2d3748;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+.success {
+    color: #48bb78; /* Green */
+}
+.error {
+    color: #ef4444; /* Red */
+}
+.info {
+    color: #63b3ed; /* Light Blue */
+}
+.warning {
+    color: #f6ad55; /* Orange */
+}
+.link-text {
+    color: #4299e1;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+.status-online {
+    background-color: #48bb78; /* Green */
+}
+.status-offline {
+    background-color: #ef4444; /* Red */
+}
+/* More Compact Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 28px; /* Further reduced width */
+    height: 16px; /* Further reduced height */
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #4a5568; /* Gray for off */
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 16px; /* Adjusted border-radius for new height */
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px; /* Reduced height to fit 16px track */
+    width: 12px; /* Reduced width to fit 16px track */
+    left: 2px; /* Adjusted position */
+    bottom: 2px; /* Adjusted position */
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #48bb78; /* Green for on */
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #48bb78;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(12px); /* Adjusted translation for new width */
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+}
+/* More compact settings container */
+#message-type-settings-container {
+    max-height: 200px; /* Fixed height */
+    overflow-y: auto; /* Make it scrollable vertically */
+    padding: 0.5rem; /* Reduced padding further */
+    margin-bottom: 1rem; /* Space before buttons */
+}
+#message-type-settings-container label {
+    padding-top: 0.125rem; /* py-0.5 for even smaller vertical spacing */
+    padding-bottom: 0.125rem; /* py-0.5 */
+    font-size: 0.75rem; /* text-xs for labels */
+}
+#message-type-settings-container span { /* Target the text inside the label */
+    flex-grow: 1; /* Allow text to take up available space */
+    text-align: left; /* Align text to the left */
+    margin-right: 0.5rem; /* Small margin between text and toggle */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+
+.flex {
+    display: flex;
+}
+.justify-between {
+    justify-content: space-between;
+}
+.flex-grow-1 {
+    flex-grow: 1;
+}
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

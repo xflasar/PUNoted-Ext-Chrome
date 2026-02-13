@@ -1,0 +1,8 @@
+# Firefox/Chrome Extension Junk
+.history
+*.zip
+*.xpi
+
+# Secrets
+.env
+node_modules/
