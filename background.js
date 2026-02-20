@@ -1,6 +1,6 @@
-const SERVER_URL = 'https://punoted.ddns.net/api/auth';
-const DATA_SERVER_URL = 'https://punoted.ddns.net/api';
-const WEBSITE_URL = 'https://punoted.ddns.net';
+const SERVER_URL = 'https://api.punoted.net/auth';
+const DATA_SERVER_URL = 'https://api.punoted.net';
+const WEBSITE_URL = 'https://punoted.net';
 
 const MAX_BATCH_SIZE = 10;
 const QUEUE_DB_NAME = 'prunDataQueue';
@@ -9,7 +9,7 @@ const MIN_INTERVAL = 500;
 const MAX_INTERVAL = 10000;
 
 // Unique Header for Server Identification
-const EXTENSION_HEADER = { 'X-Extension-Client': 'PrunDataExtension' };
+const EXTENSION_HEADER = { 'X-Extension-Client': 'PrunDataExtension-Chrome' };
 
 let lastSuccessfulRequestTime = 0;
 let lastRequestDuration = 0;
