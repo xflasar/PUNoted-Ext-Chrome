@@ -63,6 +63,16 @@ async function initializeContentScript() {
 
 initializeContentScript();
 
+setInterval(() => {
+    try {
+        if (chrome.runtime && chrome.runtime.sendMessage) {
+            chrome.runtime.sendMessage({ type: 'PING' }).catch(() => {});
+        }
+    } catch (e) {
+        // Ignore extension context invalidated errors during reloads
+    }
+}, 20000);
+
 function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
 }
@@ -132,15 +142,19 @@ function processMessage(message) {
     flushTimeout = setTimeout(flushLocalQueueToBackground, FLUSH_DEBOUNCE_MS);
 }
 
+let isFlushing = false;
+
 function flushLocalQueueToBackground() {
     if (flushTimeout) {
         clearTimeout(flushTimeout);
         flushTimeout = null;
     }
 
-    if (localMessageQueue.length === 0) return;
-
-    const messagesToSend = localMessageQueue.slice(); // copy, do not clear yet
+    // Don't flush if queue is empty or if we are already in the middle of a flush
+    if (localMessageQueue.length === 0 || isFlushing) return;
+    
+    isFlushing = true;
+    const messagesToSend = localMessageQueue.slice(); // Copy the current queue
 
     try {
         if (typeof chrome !== 'undefined' && chrome.runtime) {
@@ -148,28 +162,30 @@ function flushLocalQueueToBackground() {
                 type: "PRUN_DATA_CAPTURED_BATCH",
                 payload: messagesToSend,
             }).then(response => {
+                isFlushing = false;
+                
                 if (response && response.success) {
+                    // Woke up successfully and queued the data! Remove them from local memory.
                     if (Array.isArray(response.successfullyQueuedIds) && response.successfullyQueuedIds.length > 0) {
                         localMessageQueue = localMessageQueue.filter(item => !response.successfullyQueuedIds.includes(item.id));
-                    } else {
-                        // If no IDs returned assume none queued, keep queue as-is
                     }
                     isUserLoggedIn = !!response.isUserLoggedIn;
-                    if (!isUserLoggedIn) {
-                        // keep messages in queue
-                    }
                 } else {
-                    // leave localMessageQueue intact, retry later
+                    // The background rejected it. Keep in queue and retry.
                     isUserLoggedIn = !!response?.isUserLoggedIn;
+                    setTimeout(flushLocalQueueToBackground, 2000); 
                 }
             }).catch(error => {
-                // Communication error: keep queue intact
+                // Do nothing. Keep data in the queue, wait 2 seconds, and try to wake it up again.
+                isFlushing = false;
+                setTimeout(flushLocalQueueToBackground, 2000);
             });
         } else {
-            // No chrome runtime
+            isFlushing = false;
         }
     } catch (e) {
-        // On synchronous errors keep queue intact
+        isFlushing = false;
+        setTimeout(flushLocalQueueToBackground, 2000);
     }
 }
 

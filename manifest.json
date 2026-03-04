@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PUNoted Data Forwarder",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Browser extension to capture Prosperous Universe data, authenticate users, and forward data in batches.",
   "permissions": [
     "storage"

@@ -463,35 +463,40 @@ function stopBatchSender() { batchRunning = null; }
 
 // ---------- Messaging Handler Logic ----------
 async function handleMessage(request, sender) {
-  // --- INSTANT RESPONSE LOGIC (No Await) ---
+  // 1. Instantly acknowledge the keep-alive heartbeat
+  if (request.type === 'PING') return { success: true };
+
+  // 2. HEAVY LOGIC: MUST wait for state to restore from storage after waking up
+  await initializationPromise;
+
   const now = Math.floor(Date.now() / 1000);
   const isCurrentlyLoggedIn = !!auth_token && (!auth_token_expires_at || auth_token_expires_at > now);
 
   if (request.type === 'SYNC_FROM_WEB') {
-    // Only proceed if we don't have a token OR the current one is expired
-    const now = Math.floor(Date.now() / 1000);
     const needsLogin = !auth_token || (auth_token_expires_at && auth_token_expires_at < now);
-
     if (needsLogin) {
       console.log("Detected web token, attempting background sync...");
       await syncWithWebToken(request.payload.token);
     }
-    return { success: true }; // Tell the courier we received it
+    return { success: true }; 
   }
+  
   if (request.type === 'GET_LOGIN_STATUS') return { isLoggedIn: isCurrentlyLoggedIn };
   if (request.type === 'CHECK_AUTH_STATUS') return { loggedIn: isCurrentlyLoggedIn, username, puDebugEnabled };
   if (request.type === 'GET_STATS') return { successfulSentCount, queueCount: messagesInQueueCount, serverReachable };
 
-  // --- HEAVY LOGIC (Await Initialization) ---
-  await initializationPromise;
-
   const isFromContentScript = sender.tab && sender.tab.url && sender.tab.url.startsWith('https://apex.prosperousuniverse.com');
 
   if (isFromContentScript && request.type === 'PRUN_DATA_CAPTURED_BATCH') {
-    if (!serverReachable) { if (!statusCheckerIntervalId) startServerChecker(); return { success: false, isUserLoggedIn: isCurrentlyLoggedIn, message: 'Server unreachable.' }; }
+    if (!serverReachable) { 
+      if (!statusCheckerIntervalId) startServerChecker(); 
+      return { success: false, isUserLoggedIn: isCurrentlyLoggedIn, message: 'Server unreachable.' }; 
+    }
+    
     const messagesToProcess = request.payload || [];
     const queuedIds = [];
     const promises = [];
+    
     for (const msg of messagesToProcess) {
       const messageType = msg?.message?.messageType;
       let shouldSend = false;
@@ -507,6 +512,10 @@ async function handleMessage(request, sender) {
       }
     }
     await Promise.allSettled(promises);
+    
+    // Ensure the batch sender loop is running if we just queued items
+    if (messagesInQueueCount > 0 && !batchRunning) startBatchSender();
+    
     return { success: true, isUserLoggedIn: isCurrentlyLoggedIn, message: `Queued ${queuedIds.length}`, successfullyQueuedIds: queuedIds };
   }
 
@@ -570,3 +579,27 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 initialize();
+
+// ==========================================
+// FORCE AUTO-UPDATE LOGIC
+// ==========================================
+
+// 1. Check for updates immediately every time the browser is opened
+chrome.runtime.onStartup.addListener(() => {
+    console.log("[PUNoted] Browser started. Checking for extension updates...");
+    chrome.runtime.requestUpdateCheck((status) => {
+        if (status === "update_available") {
+            console.log("[PUNoted] Update found! Reloading extension to apply...");
+            chrome.runtime.reload();
+        } else {
+            console.log("[PUNoted] Extension is up to date. Status:", status);
+        }
+    });
+});
+
+// 2. If Chrome finds an update in the background while the browser is already open, 
+// force it to install instantly rather than waiting for the user to restart Chrome.
+chrome.runtime.onUpdateAvailable.addListener((details) => {
+    console.log("[PUNoted] Background update downloaded (Version: " + details.version + "). Forcing reload...");
+    chrome.runtime.reload();
+});
