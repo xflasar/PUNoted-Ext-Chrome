@@ -1,0 +1,47 @@
+[
+  {
+    "version": "1.3.0",
+    "date": "2026-11-17",
+    "tag": "CURRENT",
+    "changes": [
+      {
+        "type": "New",
+        "items": [
+          "Native APEX Buffer Changelog: Full window integration via XIT PNT_CHANGELOG and footer shortcut.",
+          "Fleet Telemetry in Offline Briefing: Real-time tracking of ships in flight vs in port while away.",
+          "Native APEX HUD Dark Theme: Cohesive deep obsidian and violet neon cyberpunk interface styling.",
+          "In-game Feature Controls: Granular per-feature toggles directly configurable inside extension popup."
+        ]
+      },
+      {
+        "type": "Improved",
+        "items": [
+          "Contract Enhancements and Tags: Instant cleanup and observer detachment when toggled off in settings.",
+          "Corporation Contracts Badge: Full live synchronization with extension feature settings.",
+          "High Performance Data Forwarding: Streamlined GZip transport for backend production telemetry."
+        ]
+      },
+      {
+        "type": "Fixed",
+        "items": [
+          "Daily active time calculation accuracy and offline session threshold precision."
+        ]
+      }
+    ]
+  },
+  {
+    "version": "1.2.4",
+    "date": "2026-11-14",
+    "changes": [
+      {
+        "type": "New",
+        "items": [
+          "In-game Feature Settings: Dedicated toggles in popup for all custom UI add-ons.",
+          "Telemetry Changelog: Quick-access HUD directly from the version footer indicator.",
+          "Fleet Commands 2x2 Grid: Compact arrangement for fly, cargo, fuel, unload buttons.",
+          "Corporation Contracts Multi-tier Pricing: Automatic calculation and price tags for recurring contract conditions."
+        ]
+      }
+    ]
+  }
+]

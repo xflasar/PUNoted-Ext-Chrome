@@ -1,146 +1,400 @@
-body {
-    width: 300px;
-    font-family: "Inter", sans-serif;
-    background-color: #1a202c;
-    color: #e2e8f0;
+/* PUNoted Extension - Landing Page Premium Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
+
+html, body {
+    width: 380px;
+    background-color: #030309 !important;
+    background-image: 
+        radial-gradient(circle at 50% 10%, rgba(123, 104, 238, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 50% 20%, #0c0c24 0%, #050512 60%, #030309 100%) !important;
+    color: #f1f5f9;
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 8px;
+    border: none;
+    outline: none;
+    overflow-x: hidden;
+}
+
+/* Glassmorphism Floating Card Container */
 .container {
-    padding: 1rem;
+    width: 100%;
+    min-height: 480px;
+    background: rgba(16, 16, 36, 0.85);
+    border: 1px solid rgba(123, 104, 238, 0.4);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 
+        0 0 35px rgba(123, 104, 238, 0.2),
+        inset 0 0 15px rgba(123, 104, 238, 0.08);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
+
+/* Header Styling */
+.header-brand {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.dev-gear-btn {
+    position: absolute;
+    right: 4px;
+    top: 2px;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.dev-gear-btn:hover {
+    opacity: 1;
+    transform: rotate(45deg);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.brand-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 0%, #d8b4fe 50%, #7b68ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-title::after {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #7b68ee;
+    box-shadow: 0 0 10px #7b68ee;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Glass Cards & Panels */
+.glass-panel {
+    background: rgba(22, 22, 45, 0.55);
+    border: 1px solid rgba(123, 104, 238, 0.22);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.metric-row:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.metric-label {
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.metric-value {
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+/* Status Indicators & Pills */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.status-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.status-online {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+.status-online .status-indicator {
+    background-color: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+}
+
+.status-offline {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.status-offline .status-indicator {
+    background-color: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+}
+
+/* Context Badges */
+.context-badge {
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.context-company {
+    background: rgba(59, 130, 246, 0.18);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.context-government {
+    background: rgba(168, 85, 247, 0.18);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
+.context-admincenter {
+    background: rgba(234, 179, 8, 0.18);
+    color: #facc15;
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
+}
+
+/* Glow Count Values */
+.val-sent {
+    color: #4ade80;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+.val-queue {
+    color: #facc15;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+}
+
+/* Inputs & Form Elements */
+.form-group {
+    margin-bottom: 14px;
+    text-align: left;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 6px;
+}
+
 input[type="text"],
 input[type="password"],
-input[type="email"] { 
-    background-color: #2d3748;
-    border-color: #4a5568;
-    color: #e2e8f0;
+input[type="email"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(123, 104, 238, 0.3);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s ease;
 }
-button {
-    background-color: #4299e1; /* Blue */
-    color: white;
-    border-radius: 0.375rem;
-    padding: 0.5rem 1rem;
-    font-weight: 600; /* font-semibold */
-    transition: background-color 0.2s;
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    border-color: #7b68ee;
+    box-shadow: 0 0 12px rgba(123, 104, 238, 0.4);
+    background: rgba(0, 0, 0, 0.65);
 }
-button:hover {
-    background-color: #3182ce; /* Darker blue */
-}
-.message-box {
-    background-color: #2d3748;
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    margin-top: 1rem;
-    font-size: 0.875rem;
-}
-.success {
-    color: #48bb78; /* Green */
-}
-.error {
-    color: #ef4444; /* Red */
-}
-.info {
-    color: #63b3ed; /* Light Blue */
-}
-.warning {
-    color: #f6ad55; /* Orange */
-}
-.link-text {
-    color: #4299e1;
+
+/* Primary Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, #7b68ee 0%, #6a5acd 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
-    text-decoration: underline;
+    box-shadow: 0 0 20px rgba(123, 104, 238, 0.4);
+    transition: all 0.2s ease;
 }
-.status-indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 5px;
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #8c7ae6 0%, #7b68ee 100%);
+    box-shadow: 0 0 28px rgba(123, 104, 238, 0.65);
+    transform: translateY(-1px);
 }
-.status-online {
-    background-color: #48bb78; /* Green */
+
+/* Secondary Buttons */
+.btn-secondary {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
-.status-offline {
-    background-color: #ef4444; /* Red */
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
 }
-/* More Compact Toggle Switch */
+
+/* Danger / Action Buttons */
+.btn-danger {
+    width: 100%;
+    padding: 10px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+    border-radius: 10px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.22);
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.3);
+}
+
+/* Checkboxes & Switches */
+.form-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 12px;
+}
+
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 28px; /* Further reduced width */
-    height: 16px; /* Further reduced height */
+    width: 32px;
+    height: 18px;
 }
+
 .toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
-.slider {
+
+.slider, .toggle-slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #4a5568; /* Gray for off */
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 16px; /* Adjusted border-radius for new height */
-}
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 12px; /* Reduced height to fit 16px track */
-    width: 12px; /* Reduced width to fit 16px track */
-    left: 2px; /* Adjusted position */
-    bottom: 2px; /* Adjusted position */
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-}
-input:checked + .slider {
-    background-color: #48bb78; /* Green for on */
-}
-input:focus + .slider {
-    box-shadow: 0 0 1px #48bb78;
-}
-input:checked + .slider:before {
-    -webkit-transform: translateX(12px); /* Adjusted translation for new width */
-    -ms-transform: translateX(12px);
-    transform: translateX(12px);
-}
-/* More compact settings container */
-#message-type-settings-container {
-    max-height: 200px; /* Fixed height */
-    overflow-y: auto; /* Make it scrollable vertically */
-    padding: 0.5rem; /* Reduced padding further */
-    margin-bottom: 1rem; /* Space before buttons */
-}
-#message-type-settings-container label {
-    padding-top: 0.125rem; /* py-0.5 for even smaller vertical spacing */
-    padding-bottom: 0.125rem; /* py-0.5 */
-    font-size: 0.75rem; /* text-xs for labels */
-}
-#message-type-settings-container span { /* Target the text inside the label */
-    flex-grow: 1; /* Allow text to take up available space */
-    text-align: left; /* Align text to the left */
-    margin-right: 0.5rem; /* Small margin between text and toggle */
-    white-space: nowrap; /* Prevent text wrapping */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Add ellipsis for long text */
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: 0.3s;
+    border-radius: 20px;
 }
 
-.flex {
+.slider:before, .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider, input:checked + .toggle-slider {
+    background-color: #7b68ee;
+    box-shadow: 0 0 10px rgba(123, 104, 238, 0.5);
+}
+
+input:checked + .slider:before, input:checked + .toggle-slider:before {
+    transform: translateX(14px);
+}
+
+/* Message Box */
+.message-box {
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.message-box.info {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+.message-box.error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.message-box.success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.space-y {
     display: flex;
-}
-.justify-between {
-    justify-content: space-between;
-}
-.flex-grow-1 {
-    flex-grow: 1;
-}
-.text-ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-direction: column;
+    gap: 10px;
 }

@@ -1,49 +1,64 @@
 {
-  "manifest_version": 3,
-  "name": "PUNoted Data Forwarder",
-  "version": "1.2.3",
-  "description": "Browser extension to capture Prosperous Universe data, authenticate users, and forward data in batches.",
-  "permissions": [
-    "storage"
-  ],
-  "host_permissions": [
-    "https://apex.prosperousuniverse.com/*",
-    "https://*.punoted.net/*"
-  ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png"
-    }
-  },
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://apex.prosperousuniverse.com/*"],
-      "js": [
-        "content.js"
-      ],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["https://punoted.net/*"],
-      "js": ["web_sync.js"],
-      "run_at": "document_idle"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "injected-script.js",
-        "prun-message-decoder.js"
-      ],
-      "matches": ["https://apex.prosperousuniverse.com/*"]
-    }
-  ],
-  "icons": {
-    "16": "icons/icon16.png"
-  }
+	"manifest_version": 3,
+	"name": "PUNoted Data Forwarder",
+	"version": "1.3.0",
+	"description": "Browser extension to capture Prosperous Universe data, authenticate users, and forward data in batches.",
+	"permissions": ["storage"],
+	"host_permissions": [
+		"https://apex.prosperousuniverse.com/*",
+		"https://*.punoted.net/*",
+		"http://localhost:9900/*"
+	],
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": {
+			"16": "icons/icon16.png"
+		}
+	},
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://apex.prosperousuniverse.com/*"],
+			"js": [
+				"features-ui/theme-global-base.js",
+				"features-ui/theme-navigation.js",
+				"features-ui/theme-tiles-windows.js",
+				"features-ui/theme-controls.js",
+				"features-ui/theme-site-production.js",
+				"features-ui/theme-tables-forms.js",
+				"features-ui/theme-tooltips-effects.js",
+				"features-ui/custom-apex-theme.js",
+				"features-ui/offline-briefing.js",
+				"materials-map.js",
+				"content.js"
+			],
+			"run_at": "document_start"
+		},
+		{
+			"matches": ["https://punoted.net/*"],
+			"js": ["web_sync.js"],
+			"run_at": "document_idle"
+		}
+	],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"injected-script.js",
+				"prun-message-decoder.js",
+				"materials-map.js",
+				"contract.js",
+				"cxl.js",
+				"corp-contracts.js",
+				"hubinventory.js",
+				"changelog.json"
+			],
+			"matches": ["https://apex.prosperousuniverse.com/*"]
+		}
+	],
+	"icons": {
+		"16": "icons/icon16.png"
+	}
 }

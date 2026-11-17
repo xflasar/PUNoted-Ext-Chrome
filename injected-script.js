@@ -9,12 +9,18 @@
   window.PUNOTED_HAS_RUN = true;
   nativeConsoleLog('[PUNoted Interceptor] Init.');
 
+  let lastKnownContext = undefined;
+
   function safeExtractContext(href) {
     try {
-      const m = href.match(/[?&]context=([0-9a-fA-F\-]{16,64})/);
-      return m ? m[1] : undefined;
+      const targetUrl = href || window.location.href;
+      const m = targetUrl.match(/context=([0-9a-fA-F\-]{16,64})/i);
+      if (m && m[1]) {
+        lastKnownContext = m[1];
+      }
+      return lastKnownContext;
     } catch (e) {
-      return undefined;
+      return lastKnownContext;
     }
   }
 
@@ -91,5 +97,5 @@
     }
   });
 
-  window.addEventListener("unload", () => { try { delete window.PUNOTED_HAS_RUN; } catch (e) {} });
+  window.addEventListener("pagehide", () => { try { delete window.PUNOTED_HAS_RUN; } catch (e) {} });
 })();

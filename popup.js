@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Dashboard elements
   const dashboardUsername = document.getElementById('dashboard-username');
+  const currentContextDisplay = document.getElementById('current-context-display');
   const successfulSentCountEl = document.getElementById('successful-sent-count');
   const queueCountDisplay = document.getElementById('queue-count');
+  const todayActivityDisplay = document.getElementById('today-activity-display');
 
   // Controls
   const logoutButton = document.getElementById('logout-button');
@@ -43,6 +45,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   let statsIntervalId = null;
   let onMessageListener = null;
 
+  const ingameUiSettingsSection = document.getElementById('ingame-ui-settings-section');
+  const showIngameUiSettingsFromDashboardLink = document.getElementById('show-ingame-ui-settings-from-dashboard');
+  const backToDashboardFromIngameUiLink = document.getElementById('back-to-dashboard-from-ingame-ui');
+  const ingameUiSettingsContainer = document.getElementById('ingame-ui-settings-container');
+  const saveIngameUiSettingsButton = document.getElementById('save-ingame-ui-settings-button');
+
   function createTempMessageBox() {
     const el = document.createElement('div');
     el.className = 'message-box';
@@ -57,31 +65,69 @@ document.addEventListener('DOMContentLoaded', async () => {
     el._hideTimer = setTimeout(() => el.classList.remove('visible'), 3000);
   }
 
+  const devSettingsSection = document.getElementById('dev-settings-section');
+  const devMenuToggleBtn = document.getElementById('dev-menu-toggle-btn');
+  const devEnvToggleCheckbox = document.getElementById('dev-env-toggle-checkbox');
+  const backFromDevSettingsBtn = document.getElementById('back-from-dev-settings-btn');
+  const envModeBadge = document.getElementById('env-mode-badge');
+  const devServerUrlDisplay = document.getElementById('dev-server-url-display');
+  const devDataUrlDisplay = document.getElementById('dev-data-url-display');
+  const devWebsiteUrlDisplay = document.getElementById('dev-website-url-display');
+
+  let activeSectionBeforeDev = 'login-section';
+
+  async function fetchAndDisplayEnvSettings() {
+    try {
+      const res = await chrome.runtime.sendMessage({ type: 'GET_ENV_MODE' });
+      if (res) {
+        const isDev = res.currentEnv === 'dev';
+        if (devEnvToggleCheckbox) devEnvToggleCheckbox.checked = isDev;
+        if (envModeBadge) {
+          envModeBadge.textContent = isDev ? 'DEV (LOCALHOST)' : 'PROD (REMOTE)';
+          envModeBadge.style.background = isDev ? 'rgba(239, 68, 68, 0.3)' : 'rgba(123, 104, 238, 0.3)';
+          envModeBadge.style.borderColor = isDev ? 'rgba(239, 68, 68, 0.6)' : 'rgba(123, 104, 238, 0.6)';
+        }
+        if (devServerUrlDisplay) devServerUrlDisplay.textContent = res.config?.SERVER_URL || '-';
+        if (devDataUrlDisplay) devDataUrlDisplay.textContent = res.config?.DATA_SERVER_URL || '-';
+        if (devWebsiteUrlDisplay) devWebsiteUrlDisplay.textContent = res.config?.WEBSITE_URL || '-';
+      }
+    } catch (e) {}
+  }
+
   function hideAllSections() {
     loginSection?.classList.add('hidden');
     registerSection?.classList.add('hidden');
     verifyEmailSection?.classList.add('hidden');
     dashboardSection?.classList.add('hidden');
     settingsSection?.classList.add('hidden');
+    ingameUiSettingsSection?.classList.add('hidden');
+    devSettingsSection?.classList.add('hidden');
   }
 
   function showSection(id) {
+    const currentVisible = [loginSection, registerSection, verifyEmailSection, dashboardSection, settingsSection, ingameUiSettingsSection].find(s => s && !s.classList.contains('hidden'));
+    if (currentVisible && currentVisible.id !== 'dev-settings-section') {
+      activeSectionBeforeDev = currentVisible.id;
+    }
     hideAllSections();
     const el = document.getElementById(id);
     if (!el) return;
     el.classList.remove('hidden');
     if (id === 'settings-section') fetchAndDisplayMessageSettings();
+    if (id === 'ingame-ui-settings-section') fetchAndDisplayIngameUiSettings();
+    if (id === 'dev-settings-section') fetchAndDisplayEnvSettings();
   }
 
   function updateStatusPair(indicatorEl, textEl, reachable, text) {
     if (!indicatorEl || !textEl) return;
+    const pill = indicatorEl.closest('.status-pill') || indicatorEl;
     if (reachable) {
-      indicatorEl.classList.remove('status-offline');
-      indicatorEl.classList.add('status-online');
+      pill.classList.remove('status-offline');
+      pill.classList.add('status-online');
       textEl.textContent = text || 'Online';
     } else {
-      indicatorEl.classList.remove('status-online');
-      indicatorEl.classList.add('status-offline');
+      pill.classList.remove('status-online');
+      pill.classList.add('status-offline');
       textEl.textContent = text || 'Offline';
     }
   }
@@ -109,13 +155,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) { /* ignore */ }
   }
 
+  function updateContextBadge(ctx) {
+    if (!currentContextDisplay) return;
+    const val = ctx || 'COMPANY';
+    currentContextDisplay.textContent = val;
+    currentContextDisplay.className = 'context-badge';
+    if (val === 'GOVERNMENT') {
+      currentContextDisplay.classList.add('context-government');
+    } else if (val === 'ADMINCENTER') {
+      currentContextDisplay.classList.add('context-admincenter');
+    } else {
+      currentContextDisplay.classList.add('context-company');
+    }
+  }
+
   async function loadPersistedStatsAndStatus() {
     try {
-      const stored = await chrome.storage.local.get(['successfulSentCount','messagesInQueueCount','serverReachable','lastServerCheck']);
+      const stored = await chrome.storage.local.get(['successfulSentCount','messagesInQueueCount','serverReachable','lastServerCheck','currentContext']);
       const sent = stored.successfulSentCount ?? 0;
       const queued = stored.messagesInQueueCount ?? 0;
       successfulSentCountEl && (successfulSentCountEl.textContent = sent);
       queueCountDisplay && (queueCountDisplay.textContent = queued);
+      updateContextBadge(stored.currentContext);
       if (typeof stored.serverReachable === 'boolean') {
         updateAllStatusDisplays(!!stored.serverReachable, stored.serverReachable ? 'Online' : 'Offline');
       } else {
@@ -132,9 +193,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (res) {
         successfulSentCountEl && (successfulSentCountEl.textContent = res.successfulSentCount ?? 0);
         queueCountDisplay && (queueCountDisplay.textContent = res.queueCount ?? 0);
+        updateContextBadge(res.currentContext);
         updateAllStatusDisplays(!!res.serverReachable, res.serverReachable ? 'Online' : 'Offline');
         await persistStatsLocally(res.successfulSentCount ?? 0, res.queueCount ?? 0);
       }
+
+      // Read activity stats
+      const today = new Date().toISOString().split('T')[0];
+      chrome.storage.local.get(['punoted_activity_stats'], (data) => {
+        const stats = data.punoted_activity_stats?.[today] || { active_seconds: 0, open_seconds: 0 };
+        const activeMins = Math.round(stats.active_seconds / 60);
+        const openMins = Math.round(stats.open_seconds / 60);
+        if (todayActivityDisplay) {
+          if (activeMins >= 60) {
+            const h = (activeMins / 60).toFixed(1);
+            todayActivityDisplay.textContent = `${h}h (${openMins}m open)`;
+          } else {
+            todayActivityDisplay.textContent = `${activeMins}m active`;
+          }
+        }
+      });
     } catch (err) {
       updateAllStatusDisplays(false, 'Error');
     }
@@ -214,6 +292,58 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (res && res.success) showMessage(tmp, 'Settings saved.', 'success');
       else showMessage(tmp, res?.message || 'Save failed', 'error');
     } catch (err) { showMessage(tmp, 'Error saving settings.', 'error'); }
+  }
+
+  const INGAME_UI_FEATURE_LABELS = {
+    customTheme: 'Custom Dark APEX Window Styling',
+    offlineBriefing: 'Show "While You Were Away" Briefing on Login',
+    corpContracts: 'Corporation Contracts Badge',
+    contractEnhancements: 'Contract Enhancements & Tags',
+    cxlEnhancements: 'CXL Enhancements',
+    hubInventory: 'Hub Inventory Overview'
+  };
+
+  async function fetchAndDisplayIngameUiSettings() {
+    if (!ingameUiSettingsContainer) return;
+    ingameUiSettingsContainer.innerHTML = '<p class="text-gray-500 text-sm">Loading UI settings...</p>';
+    try {
+      const settings = await chrome.runtime.sendMessage({ type: 'GET_INGAME_UI_SETTINGS' });
+      ingameUiSettingsContainer.innerHTML = '';
+      if (settings && Object.keys(settings).length) {
+        for (const [key, labelText] of Object.entries(INGAME_UI_FEATURE_LABELS)) {
+          const isEnabled = settings[key] === true; // default false if unconfigured
+          const label = document.createElement('label');
+          label.className = 'flex justify-between text-gray-300 py-1 text-xs';
+          label.style.display = 'flex';
+          label.style.justifyContent = 'space-between';
+          label.style.alignItems = 'center';
+          label.style.padding = '4px 0';
+          label.innerHTML = `
+            <span style="font-size: 0.8rem; font-weight: 500;">${labelText}</span>
+            <label class="toggle-switch"><input type="checkbox" data-ingame-feature="${key}" ${isEnabled ? 'checked' : ''}><span class="slider"></span></label>
+          `;
+          ingameUiSettingsContainer.appendChild(label);
+        }
+      } else {
+        ingameUiSettingsContainer.innerHTML = '<p class="text-red-400 text-sm">No UI features found.</p>';
+      }
+    } catch (err) {
+      ingameUiSettingsContainer.innerHTML = '<p class="text-red-400 text-sm">Error loading UI settings.</p>';
+    }
+  }
+
+  async function saveIngameUiSettings() {
+    if (!ingameUiSettingsContainer) return;
+    const updated = {};
+    const cbs = ingameUiSettingsContainer.querySelectorAll('input[type="checkbox"]');
+    cbs.forEach(cb => { updated[cb.dataset.ingameFeature] = cb.checked; });
+    const tmp = createTempMessageBox();
+    showMessage(tmp, 'Saving UI preferences...', 'info');
+    try {
+      const res = await chrome.runtime.sendMessage({ type: 'SET_INGAME_UI_SETTINGS', payload: updated });
+      if (res && res.success) showMessage(tmp, 'UI preferences saved.', 'success');
+      else showMessage(tmp, res?.message || 'Save failed', 'error');
+    } catch (err) { showMessage(tmp, 'Error saving UI preferences.', 'error'); }
   }
 
   // Event handlers
@@ -327,6 +457,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   showSettingsFromLoginLink?.addEventListener('click', (e) => { e.preventDefault(); showSection('settings-section'); });
   backToDashboardFromSettingsLink?.addEventListener('click', (e) => { e.preventDefault(); showSection('dashboard-section'); });
   saveSettingsButton?.addEventListener('click', saveMessageSettings);
+
+  showIngameUiSettingsFromDashboardLink?.addEventListener('click', (e) => { e.preventDefault(); showSection('ingame-ui-settings-section'); });
+  backToDashboardFromIngameUiLink?.addEventListener('click', (e) => { e.preventDefault(); showSection('dashboard-section'); });
+  saveIngameUiSettingsButton?.addEventListener('click', saveIngameUiSettings);
+
+  devMenuToggleBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (devSettingsSection?.classList.contains('hidden')) {
+      showSection('dev-settings-section');
+    } else {
+      showSection(activeSectionBeforeDev || 'login-section');
+    }
+  });
+
+  backFromDevSettingsBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection(activeSectionBeforeDev || 'login-section');
+  });
+
+  devEnvToggleCheckbox?.addEventListener('change', async (e) => {
+    const envMode = e.target.checked ? 'dev' : 'prod';
+    try {
+      const res = await chrome.runtime.sendMessage({ type: 'SET_ENV_MODE', payload: { envMode } });
+      if (res && res.success) {
+        await fetchAndDisplayEnvSettings();
+        updateAllStatusDisplays(!!res.serverReachable, res.serverReachable ? 'Online' : 'Offline');
+      }
+    } catch (err) {}
+  });
 
   // Listen for background push updates
   onMessageListener = (msg) => {
